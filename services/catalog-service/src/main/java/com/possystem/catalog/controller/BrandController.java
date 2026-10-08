@@ -21,7 +21,7 @@ public class BrandController {
         return brandService.getAllBrands();
     }
 
-    @GetMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BrandDto createBrand(@Valid @RequestBody BrandDto brandDto){
         return brandService.createBrand(brandDto);
