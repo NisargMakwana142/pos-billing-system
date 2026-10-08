@@ -61,6 +61,13 @@ public class ProductService {
 
     }
 
+    public ProductResponse getProductById(Long id){
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with this id: "+id));
+
+        return mapToResponse(product);
+    }
+
 
     private ProductResponse mapToResponse(Product p){
         CategoryDto catDto = p.getCategory() != null
