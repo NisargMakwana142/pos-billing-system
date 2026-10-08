@@ -68,6 +68,42 @@ public class ProductService {
         return mapToResponse(product);
     }
 
+    public ProductResponse updateProduct(Long id, ProductRequest request){
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with this id: "+id));
+
+        product.setName(request.name());
+        product.setDescription(request.description());
+        product.setPrice(request.price());
+        product.setStockQuantity(request.stockQuantity());
+        product.setBarcode(request.barcode());
+
+        //if new category is provided in update request
+        if (request.categoryId() != null){
+            Category category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with this id: "+request.categoryId()));
+            product.setCategory(category);
+        }
+
+        //if new brand is provided in update request
+        if (request.brandId() != null){
+            Brand brand = brandRepository.findById(request.brandId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Brand not found with this id: "+request.brandId()));
+            product.setBrand(brand);
+        }
+
+        Product updatedProduct = productRepository.save(product);
+        return mapToResponse(updatedProduct);
+    }
+
+    public void deleteProduct(Long id){
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with this id: "+id));
+
+        product.setIsActive(false);
+        productRepository.save(product);
+    }
+
 
     private ProductResponse mapToResponse(Product p){
         CategoryDto catDto = p.getCategory() != null
